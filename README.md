@@ -1,2 +1,2 @@
-# COGSParty!!!!
+# COGSParty!!!!(best group btw)
 # ohyffsfglutdyrjdyfdetwjyrth
