@@ -11,8 +11,6 @@
 
 [node name="RigidBody2D" parent="World" instance=ExtResource("1_xly80")]
 
-[node name="Player" parent="World" instance=ExtResource("2_udcp7")]
-
 [node name="SpawnPoints" type="Node2D" parent="World"]
 
 [node name="Marker2D" type="Marker2D" parent="World/SpawnPoints"]
