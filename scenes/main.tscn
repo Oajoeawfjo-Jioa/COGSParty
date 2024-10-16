@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://ctjn7vv4g46p1"]
+
+[ext_resource type="PackedScene" uid="uid://qtq0hkl18k3u" path="res://scenes/rigid_body_2d.tscn" id="1_xly80"]
+[ext_resource type="PackedScene" uid="uid://c3476unw0lac2" path="res://scenes/player.tscn" id="2_udcp7"]
+[ext_resource type="Script" path="res://scripts/mini_game_manager.gd" id="3_0x8ty"]
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="4_ua0r1"]
+
+[node name="Main" type="Node"]
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="RigidBody2D" parent="World" instance=ExtResource("1_xly80")]
+
+[node name="Player" parent="World" instance=ExtResource("2_udcp7")]
+
+[node name="SpawnPoints" type="Node2D" parent="World"]
+
+[node name="Marker2D" type="Marker2D" parent="World/SpawnPoints"]
+position = Vector2(1072, 501)
+
+[node name="Marker2D2" type="Marker2D" parent="World/SpawnPoints"]
+position = Vector2(565, 563)
+
+[node name="Marker2D3" type="Marker2D" parent="World/SpawnPoints"]
+position = Vector2(834, 689)
+
+[node name="Marker2D4" type="Marker2D" parent="World/SpawnPoints"]
+position = Vector2(1549, 794)
+
+[node name="MinigameManager" type="Node" parent="."]
+script = ExtResource("3_0x8ty")
+
+[node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("minigame_manager", "spawn_points", "world")]
+script = ExtResource("4_ua0r1")
+minigame_manager = NodePath("../MinigameManager")
+player_prefab = ExtResource("2_udcp7")
+spawn_points = NodePath("../World/SpawnPoints")
+world = NodePath("../World")
