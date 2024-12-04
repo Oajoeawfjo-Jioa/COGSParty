@@ -3,6 +3,9 @@ extends Area2D
 class_name Hill
 
 
+signal player_owner_changed(new_owner: MiniGameManager.PlayerData)
+
+
 @export var radius: float
 # Time it takes to capture the hill
 @export var capture_duration: float = 5
@@ -13,24 +16,31 @@ class_name Hill
 @export var contested_label: Label
 
 # Player that currently owns the hill
-var player_owner: MiniGameManager.PlayerData = null
+var player_owner: MiniGameManager.PlayerData = null :
+	get:
+		return player_owner
+	set(v):
+		var old = player_owner
+		player_owner = v
+		if old != v:
+			player_owner_changed.emit(player_owner)
 # [player_index: int] = MiniGameManager.PlayerData
 var players_inside: Dictionary
 # Is another player capturing
 var is_hostile_capturing: bool :
-	get():
+	get:
 		return player_capturer != null and (player_owner == null or player_capturer != player_owner)
 # Is the owner defending the hill
 var is_owner_defending: bool :
-	get():
+	get:
 		return player_owner != null and player_capturer == player_owner
 # Are multiple players in the hill at the same time?
 var is_contested: bool :
-	get():
+	get:
 		return len(players_inside) > 1
 # Player that's currently trying to capture the hill, could be the owner
 var player_capturer: MiniGameManager.PlayerData :
-	get():
+	get:
 		# If there's only one player inside the hill,
 		# and the player isn't the owner,
 		# then the one player inside the hill is capturing the hill.
@@ -42,7 +52,7 @@ var player_capturer: MiniGameManager.PlayerData :
 var _capture_timer: float = 0
 var _circle_shape: CircleShape2D
 var _sprite_mat: ShaderMaterial :
-	get():
+	get:
 		return sprite.material as ShaderMaterial
 
 

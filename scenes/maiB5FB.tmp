@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://ctjn7vv4g46p1"]
+[gd_scene load_steps=13 format=4 uid="uid://ctjn7vv4g46p1"]
 
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_0icie"]
 [ext_resource type="Shader" path="res://assets/shaders/blur.gdshader" id="1_w2dep"]
@@ -11,7 +11,6 @@
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="4_ua0r1"]
 [ext_resource type="FontFile" uid="uid://clpl6gyewcnpy" path="res://assets/fonts/joystix monospace.otf" id="7_oqpe0"]
 [ext_resource type="PackedScene" uid="uid://dj3txa6t3gmu3" path="res://scenes/player_ui.tscn" id="11_63vnd"]
-[ext_resource type="AudioStream" uid="uid://b0l8c8d0a3erb" path="res://assets/sounds/music/climb.mp3" id="12_dre1w"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_myl8h"]
 shader = ExtResource("1_w2dep")
@@ -152,11 +151,10 @@ vertical_alignment = 1
 
 [node name="MinigameManager" type="Node" parent="."]
 script = ExtResource("3_0x8ty")
-game_name = "Mountain Climbers"
 
 [node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("minigame_manager", "spawn_points", "world", "collision_baker", "tilemap_layer", "camera", "player_ui_container", "timer_label", "hill")]
 script = ExtResource("4_ua0r1")
-game_duration = 60.0
+game_duration = 10.0
 respawn_delay = 5.0
 minigame_manager = NodePath("../MinigameManager")
 player_prefab = ExtResource("2_udcp7")
@@ -169,9 +167,3 @@ player_ui_prefab = ExtResource("11_63vnd")
 player_ui_container = NodePath("../UI/UI/PlayerUIContainer")
 timer_label = NodePath("../UI/UI/TimerLabel")
 hill = NodePath("../World/Hill")
-
-[node name="BGM" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("12_dre1w")
-volume_db = -10.0
-autoplay = true
-bus = &"BGM"
