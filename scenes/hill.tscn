@@ -1,0 +1,58 @@
+[gd_scene load_steps=7 format=3 uid="uid://btlfm2cke480c"]
+
+[ext_resource type="Script" path="res://scripts/hill.gd" id="1_8cjlr"]
+[ext_resource type="Shader" path="res://assets/shaders/hill.gdshader" id="2_gjcd6"]
+[ext_resource type="Texture2D" uid="uid://r14rlpwfj6sw" path="res://assets/sprites/square-hd.png" id="3_i1sut"]
+[ext_resource type="FontFile" uid="uid://clpl6gyewcnpy" path="res://assets/fonts/joystix monospace.otf" id="4_f4dca"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_t4kip"]
+radius = 128.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qc05k"]
+shader = ExtResource("2_gjcd6")
+shader_parameter/divisions = 128.0
+shader_parameter/stripe_bias = 2.5
+shader_parameter/speed = 32.0
+shader_parameter/angle = 0.7854
+shader_parameter/radius = 128.0
+shader_parameter/outline_width = 2.0
+shader_parameter/capture_width = 16.0
+shader_parameter/capture_amount = 1.0
+shader_parameter/start_deg = -90.0
+shader_parameter/capture_flip = false
+
+[node name="Hill" type="Area2D" node_paths=PackedStringArray("sprite", "contested_label")]
+position = Vector2(0, -161)
+script = ExtResource("1_8cjlr")
+radius = 128.0
+capture_amount = 1.0
+sprite = NodePath("Sprite")
+neutral_color = Color(1, 1, 1, 0.588235)
+contested_label = NodePath("Sprite/Label")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_t4kip")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.588235)
+self_modulate = Color(1, 1, 1, 0.513726)
+material = SubResource("ShaderMaterial_qc05k")
+texture = ExtResource("3_i1sut")
+
+[node name="Label" type="Label" parent="Sprite"]
+visible = false
+self_modulate = Color(1, 1, 1, 0.490196)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -571.0
+offset_top = -523.5
+offset_right = -453.0
+offset_bottom = -500.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_f4dca")
+theme_override_font_sizes/font_size = 16
+text = "CONTESTED"

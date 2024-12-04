@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c7hrboqls6fii"
+path="res://.godot/imported/bounce.mp3-24b81ca5bae6442001da424a70bd5ea4.mp3str"
+
+[deps]
+
+source_file="res://assets/sounds/Sound Effects/bounce.mp3"
+dest_files=["res://.godot/imported/bounce.mp3-24b81ca5bae6442001da424a70bd5ea4.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4

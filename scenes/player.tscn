@@ -1,10 +1,63 @@
-[gd_scene load_steps=6 format=3 uid="uid://c3476unw0lac2"]
+[gd_scene load_steps=21 format=3 uid="uid://c3476unw0lac2"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_dnvom"]
 [ext_resource type="SpriteFrames" uid="uid://ba4rs1ttpqllm" path="res://assets/animation/player_sprite_frames.tres" id="2_1ffrj"]
+[ext_resource type="Shader" path="res://assets/shaders/ring.gdshader" id="2_dsql6"]
+[ext_resource type="Texture2D" uid="uid://r14rlpwfj6sw" path="res://assets/sprites/square-hd.png" id="2_mget3"]
+[ext_resource type="Script" path="res://scripts/fx.gd" id="3_7anhp"]
+[ext_resource type="AudioStream" uid="uid://cig3crjq0jdii" path="res://assets/sounds/Sound Effects/jump.mp3" id="3_jhy43"]
+[ext_resource type="AudioStream" uid="uid://dgje6u5jqopkr" path="res://assets/sounds/Sound Effects/death.mp3" id="4_dtqdl"]
+[ext_resource type="Texture2D" uid="uid://fv1473tm3wgj" path="res://assets/sprites/circle.png" id="7_fwfiw"]
+[ext_resource type="AudioStream" uid="uid://cxay72t0axhhq" path="res://assets/sounds/Sound Effects/hit.mp3" id="7_kot0w"]
+[ext_resource type="AudioStream" uid="uid://c7hrboqls6fii" path="res://assets/sounds/Sound Effects/bounce.mp3" id="9_3prdq"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_lln22"]
 friction = 0.0
+
+[sub_resource type="Curve" id="Curve_7333q"]
+_data = [Vector2(0.562791, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -9.75208, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_3syo0"]
+curve = SubResource("Curve_7333q")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sn1tu"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_max = 10.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.04
+scale_max = 0.08
+scale_curve = SubResource("CurveTexture_3syo0")
+
+[sub_resource type="Curve" id="Curve_jdome"]
+_data = [Vector2(0.562791, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -9.75208, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_xqf82"]
+curve = SubResource("Curve_jdome")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_uoaxv"]
+particle_flag_disable_z = true
+spread = 10.0
+initial_velocity_min = 299.5
+initial_velocity_max = 1000.0
+gravity = Vector3(0, 0, 0)
+damping_min = 794.238
+damping_max = 1000.0
+scale_min = 0.2
+scale_max = 0.4
+scale_curve = SubResource("CurveTexture_xqf82")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vf5e3"]
+shader = ExtResource("2_dsql6")
+shader_parameter/ring_color = Color(1, 1, 1, 1)
+shader_parameter/ring_fill_width = 4.0
+shader_parameter/ring_outline_width = 1.0
+shader_parameter/radius = 16.0
+shader_parameter/fill_amount = 1.0
+shader_parameter/start_deg = -90.0
+shader_parameter/flip = false
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jyf5n"]
 size = Vector2(16, 30)
@@ -12,39 +65,100 @@ size = Vector2(16, 30)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kgojl"]
 size = Vector2(16, 16)
 
-[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("color_rect", "animated_sprite", "ground_cast")]
-collision_mask = 7
+[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("animated_sprite", "ground_cast", "hp_ring", "smoke_particles", "visuals_container", "jump_fx", "death_fx", "hit_fx", "bounce_fx")]
+collision_layer = 4
+collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_lln22")
 lock_rotation = true
-linear_damp_mode = 1
-linear_damp = 5.0
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 16
 script = ExtResource("1_dnvom")
-acceleration = 100.0
-speed = 200
-jump_amount = 100
-color_rect = NodePath("ColorRect")
-animated_sprite = NodePath("AnimatedSprite2D")
+knockback_amount = Vector2(600, 1200)
+animated_sprite = NodePath("Visuals/PlayerSprite")
 ground_cast = NodePath("GroundShapeCast2D")
+hp_ring = NodePath("Visuals/HealthRing")
+smoke_particles = NodePath("SmokeParticles")
+visuals_container = NodePath("Visuals")
+jump_fx = NodePath("JumpFX")
+death_fx = NodePath("DeathFX")
+hit_fx = NodePath("HitFX")
+bounce_fx = NodePath("BounceFX")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_left = -10.0
-offset_top = -17.0
-offset_right = -7.0
-offset_bottom = -14.0
+[node name="SmokeParticles" type="GPUParticles2D" parent="."]
+position = Vector2(-1, 0)
+emitting = false
+amount = 256
+process_material = SubResource("ParticleProcessMaterial_sn1tu")
+texture = ExtResource("7_fwfiw")
+visibility_rect = Rect2(-2048, -2048, 4096, 4096)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_jyf5n")
+[node name="DeathFX" type="Node2D" parent="."]
+script = ExtResource("3_7anhp")
+play_on_awake = false
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="DeathParticles" type="GPUParticles2D" parent="DeathFX"]
+position = Vector2(-1, 0)
+emitting = false
+amount = 16
+process_material = SubResource("ParticleProcessMaterial_uoaxv")
+texture = ExtResource("7_fwfiw")
+one_shot = true
+explosiveness = 0.8
+visibility_rect = Rect2(-2048, -2048, 4096, 4096)
+
+[node name="DeathSFX" type="AudioStreamPlayer" parent="DeathFX"]
+stream = ExtResource("4_dtqdl")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="HealthRing" type="Sprite2D" parent="Visuals"]
+material = SubResource("ShaderMaterial_vf5e3")
+texture = ExtResource("2_mget3")
+
+[node name="PlayerSprite" type="AnimatedSprite2D" parent="Visuals"]
 scale = Vector2(0.5, 0.5)
 sprite_frames = ExtResource("2_1ffrj")
 animation = &"attack"
-frame_progress = 0.0714502
+frame = 14
+frame_progress = 1.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_jyf5n")
 
 [node name="GroundShapeCast2D" type="ShapeCast2D" parent="."]
 position = Vector2(0, 15)
 shape = SubResource("RectangleShape2D_kgojl")
 target_position = Vector2(0, 4)
 collision_mask = 2
+
+[node name="HitFX" type="Node2D" parent="."]
+script = ExtResource("3_7anhp")
+play_on_awake = false
+unparent_on_play = false
+free_on_finish = false
+
+[node name="HitSFX" type="AudioStreamPlayer" parent="HitFX"]
+stream = ExtResource("7_kot0w")
+volume_db = -4.237
+
+[node name="BounceFX" type="Node2D" parent="."]
+script = ExtResource("3_7anhp")
+play_on_awake = false
+unparent_on_play = false
+free_on_finish = false
+
+[node name="BounceSFX" type="AudioStreamPlayer" parent="BounceFX"]
+stream = ExtResource("9_3prdq")
+volume_db = -4.237
+
+[node name="JumpFX" type="Node2D" parent="."]
+script = ExtResource("3_7anhp")
+play_on_awake = false
+unparent_on_play = false
+free_on_finish = false
+
+[node name="JumpSFX" type="AudioStreamPlayer" parent="JumpFX"]
+stream = ExtResource("3_jhy43")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
