@@ -1,0 +1,13 @@
+{
+  "title": "Mountain Climbers",
+  "description": "King of the Hill Smash Bros!",
+  "banner": "./banner.png",
+  "date": "12/4/2024",
+  "developers": ["Alan", "Tuj", "Alan 2", "Thomas", "George"],
+  "engine": "Godot",
+  "min_players": 2,
+  "max_players": 4,
+  "builds": {
+    "windows": "./windows/MountainClimbers.exe"
+  }
+}
