@@ -26,25 +26,15 @@ var player_owner: MiniGameManager.PlayerData = null :
 			player_owner_changed.emit(player_owner)
 # [player_index: int] = MiniGameManager.PlayerData
 var players_inside: Dictionary
-# Is another player capturing
-var is_hostile_capturing: bool :
-	get:
-		return player_capturer != null and (player_owner == null or player_capturer != player_owner)
-# Is the owner defending the hill
-var is_owner_defending: bool :
-	get:
-		return player_owner != null and player_capturer == player_owner
 # Are multiple players in the hill at the same time?
-var is_contested: bool :
-	get:
-		return len(players_inside) > 1
+var is_contested: bool
 # Player that's currently trying to capture the hill, could be the owner
 var player_capturer: MiniGameManager.PlayerData :
 	get:
 		# If there's only one player inside the hill,
 		# and the player isn't the owner,
 		# then the one player inside the hill is capturing the hill.
-		if len(players_inside) == 1:
+		if len(players_inside) > 0:
 			var capturer = players_inside[players_inside.keys()[0]]
 			return capturer
 		return null
@@ -90,24 +80,34 @@ func _process(delta: float) -> void:
 		_update_visuals()
 		return
 	
-	if is_hostile_capturing:
+	is_contested = true
+	if len(players_inside) > 0:
 		if player_owner != null:
-			# Remove existing player's capture
-			capture_amount -= delta / capture_duration
-			if capture_amount <= 0:
-				capture_amount = 0
-				player_owner = null
+			if not player_owner.index in players_inside:
+				# Remove existing player's capture
+				capture_amount -= delta / capture_duration
+				if capture_amount <= 0:
+					capture_amount = 0
+					player_owner = null
+				is_contested = false
+			elif player_capturer == player_owner and len(players_inside) == 1:
+				# Repair capture amount if the owner is defending
+				capture_amount += delta / capture_duration
+				if capture_amount >= 1:
+					capture_amount = 1
+				is_contested = false
 		else:
 			# Capture neutral hill
 			capture_amount += delta / capture_duration
 			if capture_amount >= 1:
 				capture_amount = 1
-				player_owner = player_capturer
-	if is_owner_defending:
-		# Repair capture amount if the owner is defending
-		capture_amount += delta / capture_duration
-		if capture_amount >= 1:
-			capture_amount = 1
+				if len(players_inside) == 1:
+					is_contested = false
+					player_owner = player_capturer
+			else:
+				is_contested = false
+	else:
+		is_contested = false
 	
 	_update_visuals()
 

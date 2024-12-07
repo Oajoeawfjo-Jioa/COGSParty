@@ -19,7 +19,7 @@ signal death
 @export var speed = 200.0
 @export var jump_amount = 400.0
 @export var dash_amount = 300.0
-@export var deadzone = 0.25
+@export var deadzone = 0.5
 @export var max_jumps: int = 3
 @export var animated_sprite: AnimatedSprite2D
 @export var ground_cast: ShapeCast2D
